@@ -1,7 +1,7 @@
 "------	auto close empty buffer when leaving it
-autocmd BufUnload * if bufexists('%') && bufname('%')=='' 
-\ && getbufinfo('%')[0].changed 
-\| exe 'bw!' | endif
+" autocmd BufUnload * if bufexists('%') && bufname('%')=='' 
+" \ && !getbufinfo('%').changed 
+" \| exe 'bw!' | endif
 
 "------	cd into the dir of arguments
 autocmd VimEnter * execute 'cd '.FindArgDir()
@@ -20,7 +20,7 @@ syntax on
 filetype on
 
 "------	line number
-" set nu
+set nu
 set rnu
 set nuw=1
 set signcolumn=yes:1
@@ -50,20 +50,23 @@ noremap <leader>w :w<CR>
 "vnoremap <C-p> "+gP
 "xnoremap <C-p> "+gP
 
-"------ shift tab to exit insert mode
-inoremap <s-tab> <esc>
+"------ alt tab to exit insert mode same pos
+inoremap <M-tab> <esc>l
 
-"------	Ctrl/Alt J K
+"------	Scroll Up/Down
 xnoremap <S-J> :m+<CR>
 xnoremap <S-K> :m-2<CR>
-nnoremap <C-k> ddkP
-nnoremap <C-j> ddp
-nnoremap <M-k> 2<c-y>
-nnoremap <M-j> 2<c-e>
+
+nnoremap <c-z> <nop>
+"------	Move lines Up/Down
+nnoremap <C-j> :m .+1<CR>
+xnoremap <C-j> :m '>+1<CR>gv
+nnoremap <C-k> :m .-2<CR>
+xnoremap <C-k> :m '<-2<CR>gv
 
 "------	Insert new lines in normal mode
-nnoremap <leader>o :call append(line('.'), '')<CR>j
-nnoremap <leader>O :call append(line('.')-1, '')<CR>k
+nnoremap <M-o> :call append(line('.'), '')<CR>j
+nnoremap <M-O> :call append(line('.')-1, '')<CR>k
 
 "------	help
 nnoremap <leader>hv :vert bo help 
@@ -142,9 +145,8 @@ let g:AutoPairsMultilineClose=0
 
 "------	Quick Comment
 Plug 'preservim/nerdcommenter'
-let g:nerdcreateDefaultMappings = 0
+let g:NERDCreateDefaultMappings = 0
 let g:NERDSpaceDelims = 1
-let g:NERDCompactSexyComs = 1
 let g:NERDCommentEmptyLines = 1
 nnoremap <leader>n <plug>NERDCommenterToggle
 xnoremap <leader>n <plug>NERDCommenterToggle
@@ -173,29 +175,37 @@ autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1
 autocmd BufWinEnter * silent NERDTreeMirror
 "------ Start NERDTree when Vim starts with a directory argument.
 "au VimEnter NERD_tree_1 enew | execute 'NERDTree '.argv()[0]
-"------ Start NERDTree when Vim starts with a directory argument.
+"------ Start NERDTree when Vim starts with a directory argument alternative
 "autocmd StdinReadPre * let s:std_in=1
 "autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
 "	\ execute 'NERDTree' argv()[0] | enew | execute 'cd '.argv()[0] | endif
 
-
 "------	Sessions
 Plug 'tpope/vim-obsession'
 Plug 'dhruvasagar/vim-prosession'
-"Plug 'xolox/vim-session'
 let g:prosession_on_startup = 0
 nnoremap <leader>ss :Prosession<CR>
-nnoremap <leader>so :Prosession 
+nnoremap <leader>so :Prosession <Tab>
 nnoremap <leader>sc :ProsessionClean<CR>
+Plug 'justb3a/vim-smarties'
 nnoremap <leader>sx :ProsessionDelete<CR>
-nnoremap <leader>sd :ProsessionDelete 
+nnoremap <leader>sd :ProsessionDelete <Tab>
+"Plug 'xolox/vim-session'
 "Plug 'dominickng/fzf-session.vim'
 "let g:prosession_dir = '~/.vim/session/'
 "let g:fzf_session_path = g:prosession_dir
 "nnoremap <leader>sp :Sessions<CR>
 
 "------ Buffers
-"Plug 'moll/vim-bbye'
+Plug 'moll/vim-bbye'
+nnoremap <leader>b<tab> :b#<cr>
+nnoremap <leader>bn :bn<cr>
+nnoremap <leader>bb :bp<cr>
+nnoremap <leader>bd :Bd<cr>
+nnoremap <leader>bx :Bw<cr>
+nnoremap <leader>bl :ls<cr>
+nnoremap <leader>bj :ls!<cr>
+nnoremap <leader>bw :ls!<cr>:Bw 
 
 "------ Tab bar
 nnoremap <leader><Tab> :b#<CR>
@@ -203,14 +213,6 @@ nnoremap <leader><Tab> :b#<CR>
 Plug 'pacha/vem-tabline'
 "Plug 'bagrat/vim-buffet'
 "Plug 'ap/vim-buftabline'
-nnoremap <leader>b<tab> :b#<cr>
-nnoremap <leader>bn :bn<cr>
-nnoremap <leader>bb :bp<cr>
-nnoremap <leader>bd :bd<cr>
-nnoremap <leader>bx :bw<cr>
-nnoremap <leader>bl :ls<cr>
-nnoremap <leader>bj :ls!<cr>
-nnoremap <leader>bw :ls!<cr>:bw 
 
 "------	Fuzzy Find
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -236,7 +238,6 @@ Plug 'marcopaganini/mojave-vim-theme'
 Plug 'cliuj/vim-dark-meadow'
 Plug 'bluz71/vim-moonfly-colors'
 Plug 'slugbyte/yuejiu'
-Plug 'justb3a/vim-smarties'
 Plug 'noprompt/lite-brite'
 Plug 'vim-scripts/abbott.vim'
 Plug 'bignimbus/pop-punk.vim'
